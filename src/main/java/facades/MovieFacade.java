@@ -42,30 +42,36 @@ public class MovieFacade {
         return emf.createEntityManager();
     }
 
-    public MovieDTO getMovie(long id) {
+    public List<MovieDTO> getMovie(long id) {
 
         EntityManager em = getEntityManager();
+        List<MovieDTO> moviesDTO = new ArrayList();
+
         try {
             Movie movie = em.find(Movie.class, id);
-
-            MovieDTO movieDTO = new MovieDTO(movie);
-            return movieDTO;
+            moviesDTO.add(new MovieDTO(movie));
+            return moviesDTO;
 
         } finally {
             em.close();
         }
     }
 
-    public MovieDTO getMovieByTitle(String title) {
+    public List<MovieDTO> getMovieByTitle(String title) {
 
         EntityManager em = getEntityManager();
-        try {
-            List<Movie> movie;
-            TypedQuery<Movie> query = em.createQuery("SELECT m FROM Movie m WHERE m.title = :title", Movie.class);
-            movie = query.setParameter("title", title).getResultList();
+        List<MovieDTO> moviesDTO = new ArrayList();
 
-            MovieDTO dto = new MovieDTO(movie.get(0));
-            return dto;
+        try {
+
+            TypedQuery<Movie> query = em.createQuery("SELECT m FROM Movie m WHERE m.title = :title", Movie.class);
+            List<Movie> movies = query.setParameter("title", title).getResultList();
+
+            movies.forEach((movie) -> {
+                moviesDTO.add(new MovieDTO(movie));
+            });
+
+            return moviesDTO;
 
         } finally {
             em.close();

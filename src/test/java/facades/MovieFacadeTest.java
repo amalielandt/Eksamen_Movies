@@ -140,10 +140,11 @@ public class MovieFacadeTest {
     public void testGetMovie() {
         System.out.println("getMovie");
         
-        MovieDTO result = facade.getMovie(m1.getId());
-        assertEquals(m1.getTitle(), result.getTitle());
-        assertEquals(m1.getYear(), result.getYear());
-        assertEquals(1, result.getActors().size());
+        List<MovieDTO> result = facade.getMovie(m1.getId());
+        assertEquals(1, result.size());
+        assertEquals(m1.getTitle(), result.get(0).getTitle());
+        assertEquals(m1.getYear(), result.get(0).getYear());
+        assertEquals(1, result.get(0).getActors().size());
     }
 
     /**
@@ -153,10 +154,11 @@ public class MovieFacadeTest {
     public void testGetMovieByTitle() {
         System.out.println("getMovieByTitle");
         
-        MovieDTO result = facade.getMovie(m2.getId());
-        assertEquals(m2.getTitle(), result.getTitle());
-        assertEquals(m2.getYear(), result.getYear());
-        assertEquals(2, result.getActors().size());
+        List<MovieDTO> result = facade.getMovie(m2.getId());
+        assertEquals(1, result.size());
+        assertEquals(m2.getTitle(), result.get(0).getTitle());
+        assertEquals(m2.getYear(), result.get(0).getYear());
+        assertEquals(2, result.get(0).getActors().size());
     }
     
     /**

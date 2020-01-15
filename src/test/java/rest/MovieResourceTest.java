@@ -158,11 +158,8 @@ public class MovieResourceTest {
                 .get("/movie/" + m1.getId()).then()
                 .assertThat()
                 .statusCode(HttpStatus.OK_200.getStatusCode())
-                .body("title", equalTo(m1.getTitle()),
-                        "year", equalTo(m1.getYear()),
-                        "actors.name", hasItems(a1.getName()),
-                        "directors.name", hasItems(d1.getName()),
-                        "genres.name", hasItems(g1.getName()));
+                .body("title", hasItems(m1.getTitle()),
+                        "year", hasItems(m1.getYear()));
     }
 
     /**
@@ -177,11 +174,8 @@ public class MovieResourceTest {
                 .get("/movie/title/" + m1.getTitle()).then()
                 .assertThat()
                 .statusCode(HttpStatus.OK_200.getStatusCode())
-                .body("title", equalTo(m1.getTitle()),
-                        "year", equalTo(m1.getYear()),
-                        "actors.name", hasItems(a1.getName()),
-                        "directors.name", hasItems(d1.getName()),
-                        "genres.name", hasItems(g1.getName()));
+                .body("title", hasItems(m1.getTitle()),
+                        "year", hasItems(m1.getYear()));
     }
 
     /**

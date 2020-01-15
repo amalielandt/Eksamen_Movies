@@ -46,7 +46,7 @@ public class MovieResource {
     @GET
     @Path("/{id}")
     @Produces({MediaType.APPLICATION_JSON})
-    public MovieDTO getMovie(@PathParam("id") long id) {
+    public List<MovieDTO> getMovie(@PathParam("id") long id) {
 
         return facade.getMovie(id);
     }
@@ -54,7 +54,7 @@ public class MovieResource {
     @GET
     @Path("/title/{title}")
     @Produces({MediaType.APPLICATION_JSON})
-    public MovieDTO getMovie(@PathParam("title") String title) {
+    public List<MovieDTO> getMovie(@PathParam("title") String title) {
 
         return facade.getMovieByTitle(title);
     }
