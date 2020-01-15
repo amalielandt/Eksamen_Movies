@@ -1,14 +1,8 @@
 package rest;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import DTO.QuoteDTO;
+
 import entities.User;
-import errorhandling.NotFoundException;
-import facades.DataFacade;
-import static facades.DataFacade.getDataFacade;
 import java.util.List;
-import java.util.concurrent.ExecutionException;
 import javax.annotation.security.RolesAllowed;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -49,7 +43,7 @@ public class LoginResource {
 
         EntityManager em = EMF.createEntityManager();
         try {
-            List<User> users = em.createQuery("select user from User user").getResultList();
+            List<User> users = em.createQuery("select u from User u").getResultList();
             return "[" + users.size() + "]";
         } finally {
             em.close();

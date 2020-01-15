@@ -26,6 +26,9 @@ public class GenericExceptionMapper implements ExceptionMapper<Throwable> {
         ExceptionDTO err;
         if (ex instanceof WebApplicationException) {
             err = new ExceptionDTO(type.getStatusCode(), ((WebApplicationException) ex).getMessage());
+        } else if (ex instanceof AuthenticationException) {
+
+            err = new ExceptionDTO(type.getStatusCode(), ((AuthenticationException) ex).getMessage());
         } else {
 
             err = new ExceptionDTO(type.getStatusCode(), type.getReasonPhrase());
@@ -39,13 +42,16 @@ public class GenericExceptionMapper implements ExceptionMapper<Throwable> {
     private Response.StatusType getStatusType(Throwable ex) {
         if (ex instanceof WebApplicationException) {
             return ((WebApplicationException) ex).getResponse().getStatusInfo();
+        } else if (ex instanceof AuthenticationException) {
+            return Response.Status.BAD_REQUEST;
         }
         return Response.Status.INTERNAL_SERVER_ERROR;
     }
+
     //Small hack, to provide json-error response in the filter
-    public static Response makeErrRes(String msg,int status){
+    public static Response makeErrRes(String msg, int status) {
         ExceptionDTO error = new ExceptionDTO(status, msg);
-        String errJson =gson.toJson(error); 
+        String errJson = gson.toJson(error);
         return Response.status(error.getCode())
                 .entity(errJson)
                 .type(MediaType.APPLICATION_JSON)
