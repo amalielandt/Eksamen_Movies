@@ -49,7 +49,9 @@ public class MovieFacade {
 
         try {
             Movie movie = em.find(Movie.class, id);
-            moviesDTO.add(new MovieDTO(movie));
+            if (movie != null) {
+                moviesDTO.add(new MovieDTO(movie));
+            }
             return moviesDTO;
 
         } finally {
