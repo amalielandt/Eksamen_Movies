@@ -39,7 +39,7 @@ public class MovieResource {
     @Produces({MediaType.APPLICATION_JSON})
     public String populateDB() {
 
-        //facade.populateDB();
+        facade.populateDB();
         return "{\"msg\":\"The database is now populated\"}";
     }
 
