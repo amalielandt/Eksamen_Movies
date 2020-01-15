@@ -95,6 +95,7 @@ public class UserFacadeTest {
 
     /**
      * Test of getVeryfiedUser method, of class UserFacade.
+     * @throws java.lang.Exception
      */
     @Test
     public void testGetVeryfiedUser() throws Exception {
@@ -105,5 +106,22 @@ public class UserFacadeTest {
      
         User result = facade.getVeryfiedUser(username, password);
         assertEquals("admin", result.getUserName());
+    }
+
+    /**
+     * Test of createUser method, of class UserFacade.
+     * @throws java.lang.Exception
+     */
+    @Test
+    public void testCreateUser() throws Exception {
+        System.out.println("createUser");
+        
+        String username = "test";
+        String password = "1234";
+     
+        facade.createUser(username, password);
+        User result = facade.getVeryfiedUser(username, password);
+        assertEquals("test", result.getUserName());
+        
     }
 }

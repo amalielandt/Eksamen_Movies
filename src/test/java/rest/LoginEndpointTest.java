@@ -12,9 +12,11 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.ws.rs.core.UriBuilder;
 import org.glassfish.grizzly.http.server.HttpServer;
+import org.glassfish.grizzly.http.util.HttpStatus;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.hasItems;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -88,143 +90,158 @@ public class LoginEndpointTest {
             em.close();
         }
     }
-    
+
     //This is how we hold on to the token after login, similar to that a client must store the token somewhere
-  private static String securityToken;
+    private static String securityToken;
 
-  //Utility method to login and set the returned securityToken
-  private static void login(String username, String password) {
-    String json = String.format("{username: \"%s\", password: \"%s\"}", username, password);
-    securityToken = given()
-            .contentType("application/json")
-            .body(json)
-            //.when().post("/api/login")
-            .when().post("/login")
-            .then()
-            .extract().path("token");
-      System.out.println("TOKEN ---> "+securityToken);
-  }
+    //Utility method to login and set the returned securityToken
+    private static void login(String username, String password) {
+        String json = String.format("{username: \"%s\", password: \"%s\"}", username, password);
+        securityToken = given()
+                .contentType("application/json")
+                .body(json)
+                //.when().post("/api/login")
+                .when().post("/login")
+                .then()
+                .extract().path("token");
+        System.out.println("TOKEN ---> " + securityToken);
+    }
 
-  private void logOut() {
-    securityToken = null;
-  }
+    private void logOut() {
+        securityToken = null;
+    }
 
-  @Test
-  public void serverIsRunning() {
-    System.out.println("Testing is server UP");
-    given().when().get("/info").then().statusCode(200);
-  }
-  
-   @Test
-   //Edit and specify this when code is used as startcode
-  public void testRestNoAuthenticationRequired() {
-    given()
-            .contentType("application/json")
-            .when()
-            .get("/info").then()
-            .statusCode(200)
-            .assertThat().contentType(ContentType.JSON);
-  }
+    @Test
+    public void serverIsRunning() {
+        System.out.println("Testing is server UP");
+        given().when().get("/info").then().statusCode(200);
+    }
 
-  @Test
-  //Edit and specify this when code is used as startcode
-  public void testRestForAdmin() {
-    login("admin", "test");
-    given()
-            .contentType("application/json")
-            .accept(ContentType.JSON)
-            .header("x-access-token", securityToken)
-            .when()
-            .get("/info/admin").then()
-            .statusCode(200)
-            .assertThat().contentType(ContentType.JSON);
-  }
+    @Test
+    //Edit and specify this when code is used as startcode
+    public void testRestNoAuthenticationRequired() {
+        given()
+                .contentType("application/json")
+                .when()
+                .get("/info").then()
+                .statusCode(200)
+                .assertThat().contentType(ContentType.JSON);
+    }
 
-  @Test
-  //Edit and specify this when code is used as startcode
-  public void testRestForUser() {
-    login("user", "test");
-    given()
-            .contentType("application/json")
-            .header("x-access-token", securityToken)
-            .when()
-            .get("/info/user").then()
-            .statusCode(200)
-            .assertThat().contentType(ContentType.JSON);
-  }
-  
-  @Test
-  public void testAutorizedUserCannotAccessAdminPage() {
-    login("user", "test");
-    given()
-            .contentType("application/json")
-            .header("x-access-token", securityToken)
-            .when()
-            .get("/info/admin").then()  //Call Admin endpoint as user
-            .statusCode(401);
-  }
-  
-  @Test
-  public void testAutorizedAdminCannotAccessUserPage() {
-    login("admin", "test");
-    given()
-            .contentType("application/json")
-            .header("x-access-token", securityToken)
-            .when()
-            .get("/info/user").then()  //Call User endpoint as Admin
-            .statusCode(401);
-  }
-  
-  @Test
-  //Edit and specify this when code is used as startcode
-  public void testRestForMultiRole1() {
-    login("user_admin", "test");
-    given()
-            .contentType("application/json")
-            .accept(ContentType.JSON)
-            .header("x-access-token", securityToken)
-            .when()
-            .get("/info/admin").then()
-            .statusCode(200)
-            .assertThat().contentType(ContentType.JSON);
-  }
+    @Test
+    //Edit and specify this when code is used as startcode
+    public void testRestForAdmin() {
+        login("admin", "test");
+        given()
+                .contentType("application/json")
+                .accept(ContentType.JSON)
+                .header("x-access-token", securityToken)
+                .when()
+                .get("/info/admin").then()
+                .statusCode(200)
+                .assertThat().contentType(ContentType.JSON);
+    }
 
-  @Test
-  //Edit and specify this when code is used as startcode
-  public void testRestForMultiRole2() {
-    login("user_admin", "test");
-    given()
-            .contentType("application/json")
-            .header("x-access-token", securityToken)
-            .when()
-            .get("/info/user").then()
-            .statusCode(200)
-            .assertThat().contentType(ContentType.JSON);
-  }
+    @Test
+    //Edit and specify this when code is used as startcode
+    public void testRestForUser() {
+        login("user", "test");
+        given()
+                .contentType("application/json")
+                .header("x-access-token", securityToken)
+                .when()
+                .get("/info/user").then()
+                .statusCode(200)
+                .assertThat().contentType(ContentType.JSON);
+    }
 
-  @Test
-  public void userNotAuthenticated() {
-    logOut();
-    given()
-            .contentType("application/json")
-            .when()
-            .get("/info/user").then()
-            .statusCode(403)
-            .body("code", equalTo(403))
-            .body("message", equalTo("Not authenticated - do login"));
-  }
+    @Test
+    public void testAutorizedUserCannotAccessAdminPage() {
+        login("user", "test");
+        given()
+                .contentType("application/json")
+                .header("x-access-token", securityToken)
+                .when()
+                .get("/info/admin").then() //Call Admin endpoint as user
+                .statusCode(401);
+    }
 
-  @Test
-  public void adminNotAuthenticated() {
-    logOut();
-    given()
-            .contentType("application/json")
-            .when()
-            .get("/info/user").then()
-            .statusCode(403)
-            .body("code", equalTo(403))
-            .body("message", equalTo("Not authenticated - do login"));
-  }
-    
-    
+    @Test
+    public void testAutorizedAdminCannotAccessUserPage() {
+        login("admin", "test");
+        given()
+                .contentType("application/json")
+                .header("x-access-token", securityToken)
+                .when()
+                .get("/info/user").then() //Call User endpoint as Admin
+                .statusCode(401);
+    }
+
+    @Test
+    //Edit and specify this when code is used as startcode
+    public void testRestForMultiRole1() {
+        login("user_admin", "test");
+        given()
+                .contentType("application/json")
+                .accept(ContentType.JSON)
+                .header("x-access-token", securityToken)
+                .when()
+                .get("/info/admin").then()
+                .statusCode(200)
+                .assertThat().contentType(ContentType.JSON);
+    }
+
+    @Test
+    //Edit and specify this when code is used as startcode
+    public void testRestForMultiRole2() {
+        login("user_admin", "test");
+        given()
+                .contentType("application/json")
+                .header("x-access-token", securityToken)
+                .when()
+                .get("/info/user").then()
+                .statusCode(200)
+                .assertThat().contentType(ContentType.JSON);
+    }
+
+    @Test
+    public void userNotAuthenticated() {
+        logOut();
+        given()
+                .contentType("application/json")
+                .when()
+                .get("/info/user").then()
+                .statusCode(403)
+                .body("code", equalTo(403))
+                .body("message", equalTo("Not authenticated - do login"));
+    }
+
+    @Test
+    public void adminNotAuthenticated() {
+        logOut();
+        given()
+                .contentType("application/json")
+                .when()
+                .get("/info/user").then()
+                .statusCode(403)
+                .body("code", equalTo(403))
+                .body("message", equalTo("Not authenticated - do login"));
+    }
+
+    @Test
+    public void testCreateUser() {
+
+        String payload = "{\"username\": \"test\","
+                + "\"password\": \"1234\"}";
+
+        given()
+                .contentType("application/json")
+                .body(payload)
+                .when()
+                .post("/login/create").then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("message", equalTo("Your user is now created"));
+    }
+
 }
