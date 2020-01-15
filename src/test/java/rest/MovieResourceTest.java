@@ -10,8 +10,11 @@ import entities.Actor;
 import entities.Director;
 import entities.Genre;
 import entities.Movie;
+import entities.Role;
+import entities.User;
 import io.restassured.RestAssured;
 import static io.restassured.RestAssured.given;
+import io.restassured.http.ContentType;
 import io.restassured.parsing.Parser;
 import java.net.URI;
 import java.util.List;
@@ -24,6 +27,7 @@ import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.hasItems;
+import org.junit.After;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -128,22 +132,50 @@ public class MovieResourceTest {
         m3.addGenre(g1);
         m3.addGenre(g2);
 
+        Role adminRole = new Role("admin");
+        User admin = new User("admin", "test");
+        admin.addRole(adminRole);
+
         try {
             em.getTransaction().begin();
             em.createNamedQuery("Movie.deleteAllRows").executeUpdate();
             em.createNamedQuery("Genre.deleteAllRows").executeUpdate();
             em.createNamedQuery("Actor.deleteAllRows").executeUpdate();
             em.createNamedQuery("Director.deleteAllRows").executeUpdate();
+            em.createQuery("delete from User").executeUpdate();
+            em.createQuery("delete from Role").executeUpdate();
 
             em.persist(m1);
             em.persist(m2);
             em.persist(m3);
+
+            em.persist(adminRole);
+            em.persist(admin);
 
             em.getTransaction().commit();
 
         } finally {
             em.close();
         }
+    }
+
+    private static String securityToken;
+
+    //Utility method to login and set the returned securityToken
+    private static void login(String username, String password) {
+        String json = String.format("{username: \"%s\", password: \"%s\"}", username, password);
+        securityToken = given()
+                .contentType("application/json")
+                .body(json)
+                //.when().post("/api/login")
+                .when().post("/login")
+                .then()
+                .extract().path("token");
+        System.out.println("TOKEN ---> " + securityToken);
+    }
+
+    private void logOut() {
+        securityToken = null;
     }
 
     /**
@@ -238,4 +270,187 @@ public class MovieResourceTest {
                         "year", hasItems(m1.getYear(), m2.getYear(), m3.getYear()));
     }
 
+    /**
+     * Test of addMovie method, of class MovieResource.
+     */
+    @Test
+    public void testAddMovie() {
+        System.out.println("addMovie");
+
+        String payload = "{\"title\": \"Maleficent\","
+                + "\"year\": \"2014\","
+                + "\"votes\": \"10\"}";
+
+        login("admin", "test");
+        given()
+                .contentType("application/json")
+                .accept(ContentType.JSON)
+                .header("x-access-token", securityToken)
+                .body(payload)
+                .when()
+                .post("/movie").then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("title", equalTo("Maleficent"), "year", equalTo(2014));
+    }
+
+    public void testAddMovieNotAuthenticated() {
+        System.out.println("addMovie - Not authenticated");
+
+        String payload = "{\"title\": \"Maleficent\","
+                + "\"year\": \"2014\","
+                + "\"votes\": \"10\"}";
+
+        logOut();
+        given()
+                .contentType("application/json")
+                .accept(ContentType.JSON)
+                .body(payload)
+                .when()
+                .post("/movie").then()
+                .statusCode(403)
+                .assertThat()
+                .body("code", equalTo(403))
+                .body("message", equalTo("Not authenticated - do login"));
+    }
+
+    /**
+     * Test of editMovie method, of class MovieResource.
+     */
+    @Test
+    public void testEditMovie() {
+        System.out.println("editMovie");
+
+        String payload = "{\"title\": \"" + m1.getTitle() + "\","
+                + "\"year\": \"2014\","
+                + "\"votes\": \"10\"}";
+
+        login("admin", "test");
+        given()
+                .contentType("application/json")
+                .accept(ContentType.JSON)
+                .header("x-access-token", securityToken)
+                .body(payload)
+                .when()
+                .put("/movie/" + m1.getId()).then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("title", equalTo(m1.getTitle()), "year", equalTo(2014), "votes", equalTo(10));
+
+    }
+
+    /**
+     * Test of deleteMovie method, of class MovieResource.
+     */
+    @Test
+    public void testDeleteMovie() {
+        System.out.println("deleteMovie");
+
+        login("admin", "test");
+        given()
+                .contentType("application/json")
+                .accept(ContentType.JSON)
+                .header("x-access-token", securityToken)
+                .when()
+                .delete("/movie/" + m1.getId()).then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("status", equalTo("The movie has been deleted"));
+
+    }
+//    /**
+//     * Test of addActorToMovie method, of class MovieResource.
+//     */
+//    @Test
+//    public void testAddActorToMovie() {
+//        System.out.println("addActorToMovie");
+//        long movie_id = 0L;
+//        long actor_id = 0L;
+//        MovieResource instance = new MovieResource();
+//        String expResult = "";
+//        String result = instance.addActorToMovie(movie_id, actor_id);
+//        assertEquals(expResult, result);
+//        // TODO review the generated test code and remove the default call to fail.
+//        fail("The test case is a prototype.");
+//    }
+//
+//    /**
+//     * Test of removeActorFromMovie method, of class MovieResource.
+//     */
+//    @Test
+//    public void testRemoveActorFromMovie() {
+//        System.out.println("removeActorFromMovie");
+//        long movie_id = 0L;
+//        long actor_id = 0L;
+//        MovieResource instance = new MovieResource();
+//        String expResult = "";
+//        String result = instance.removeActorFromMovie(movie_id, actor_id);
+//        assertEquals(expResult, result);
+//        // TODO review the generated test code and remove the default call to fail.
+//        fail("The test case is a prototype.");
+//    }
+//
+//    /**
+//     * Test of addDirectorToMovie method, of class MovieResource.
+//     */
+//    @Test
+//    public void testAddDirectorToMovie() {
+//        System.out.println("addDirectorToMovie");
+//        long movie_id = 0L;
+//        long director_id = 0L;
+//        MovieResource instance = new MovieResource();
+//        String expResult = "";
+//        String result = instance.addDirectorToMovie(movie_id, director_id);
+//        assertEquals(expResult, result);
+//        // TODO review the generated test code and remove the default call to fail.
+//        fail("The test case is a prototype.");
+//    }
+//
+//    /**
+//     * Test of removeDirectorFromMovie method, of class MovieResource.
+//     */
+//    @Test
+//    public void testRemoveDirectorFromMovie() {
+//        System.out.println("removeDirectorFromMovie");
+//        long movie_id = 0L;
+//        long director_id = 0L;
+//        MovieResource instance = new MovieResource();
+//        String expResult = "";
+//        String result = instance.removeDirectorFromMovie(movie_id, director_id);
+//        assertEquals(expResult, result);
+//        // TODO review the generated test code and remove the default call to fail.
+//        fail("The test case is a prototype.");
+//    }
+//
+//    /**
+//     * Test of addGenreToMovie method, of class MovieResource.
+//     */
+//    @Test
+//    public void testAddGenreToMovie() {
+//        System.out.println("addGenreToMovie");
+//        long movie_id = 0L;
+//        long genre_id = 0L;
+//        MovieResource instance = new MovieResource();
+//        String expResult = "";
+//        String result = instance.addGenreToMovie(movie_id, genre_id);
+//        assertEquals(expResult, result);
+//        // TODO review the generated test code and remove the default call to fail.
+//        fail("The test case is a prototype.");
+//    }
+//
+//    /**
+//     * Test of removeGenreFromMovie method, of class MovieResource.
+//     */
+//    @Test
+//    public void testRemoveGenreFromMovie() {
+//        System.out.println("removeGenreFromMovie");
+//        long movie_id = 0L;
+//        long genre_id = 0L;
+//        MovieResource instance = new MovieResource();
+//        String expResult = "";
+//        String result = instance.removeGenreFromMovie(movie_id, genre_id);
+//        assertEquals(expResult, result);
+//        // TODO review the generated test code and remove the default call to fail.
+//        fail("The test case is a prototype.");
+//    }
 }

@@ -42,9 +42,20 @@ public class MovieDTO {
             this.genres.add(new GenreDTO(genre));
         });
     }
+    
+    public MovieDTO(String title, String year, String votes){
+        
+        this.title = title;
+        this.year = Integer.parseInt(year);
+        this.votes = Integer.parseInt(votes);
+    }
 
     public long getId() {
         return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getTitle() {

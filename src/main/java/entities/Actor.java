@@ -43,7 +43,7 @@ public class Actor implements Serializable {
         this.name = name;
         this.about = about;
     }
-
+    
     public Long getId() {
         return id;
     }

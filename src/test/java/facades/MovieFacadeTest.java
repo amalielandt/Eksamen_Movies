@@ -37,7 +37,6 @@ public class MovieFacadeTest {
     private Genre g1;
     private Genre g2;
     private Genre g3;
-    
 
     private Actor a1;
     private Actor a2;
@@ -82,19 +81,19 @@ public class MovieFacadeTest {
         m1 = new Movie("Edward Scissorhands", 1990, 4);
         m2 = new Movie("Once Upon a Time in Hollywood", 2019, 3);
         m3 = new Movie("Men in Black", 1997, 5);
-        
+
         m1.addActor(a1);
         m1.addDirector(d3);
         m1.addDirector(d1);
         m1.addGenre(g1);
         m1.addGenre(g2);
-        
+
         m2.addActor(a2);
         m2.addActor(a4);
         m2.addDirector(d2);
         m2.addGenre(g2);
         m2.addGenre(g3);
-        
+
         m3.addActor(a3);
         m3.addDirector(d1);
         m3.addGenre(g1);
@@ -106,7 +105,7 @@ public class MovieFacadeTest {
             em.createNamedQuery("Genre.deleteAllRows").executeUpdate();
             em.createNamedQuery("Actor.deleteAllRows").executeUpdate();
             em.createNamedQuery("Director.deleteAllRows").executeUpdate();
-            
+
             em.persist(m1);
             em.persist(m2);
             em.persist(m3);
@@ -139,7 +138,7 @@ public class MovieFacadeTest {
     @Test
     public void testGetMovie() {
         System.out.println("getMovie");
-        
+
         List<MovieDTO> result = facade.getMovie(m1.getId());
         assertEquals(1, result.size());
         assertEquals(m1.getTitle(), result.get(0).getTitle());
@@ -153,14 +152,14 @@ public class MovieFacadeTest {
     @Test
     public void testGetMovieByTitle() {
         System.out.println("getMovieByTitle");
-        
+
         List<MovieDTO> result = facade.getMovie(m2.getId());
         assertEquals(1, result.size());
         assertEquals(m2.getTitle(), result.get(0).getTitle());
         assertEquals(m2.getYear(), result.get(0).getYear());
         assertEquals(2, result.get(0).getActors().size());
     }
-    
+
     /**
      * Test of getAllMovies method, of class MovieFacade.
      */
@@ -177,7 +176,7 @@ public class MovieFacadeTest {
     @Test
     public void testGetPersonsByActor() {
         System.out.println("getPersonsByActor");
-        
+
         List<MovieDTO> movies = facade.getPersonsByActor(a1.getName());
         assertEquals(1, movies.size());
     }
@@ -188,7 +187,7 @@ public class MovieFacadeTest {
     @Test
     public void testGetPersonsByDirector() {
         System.out.println("getPersonsByDirector");
-        
+
         List<MovieDTO> movies = facade.getPersonsByDirector(d1.getName());
         assertEquals(2, movies.size());
     }
@@ -199,9 +198,154 @@ public class MovieFacadeTest {
     @Test
     public void testGetPersonsByGenre() {
         System.out.println("getPersonsByGenre");
-        
+
         List<MovieDTO> movies = facade.getPersonsByGenre(g2.getName());
         assertEquals(3, movies.size());
+    }
+
+    /**
+     * Test of addMovie method, of class MovieFacade.
+     *
+     * @throws java.lang.Exception
+     */
+    @Test
+    public void testAddMovie() throws Exception {
+        System.out.println("addMovie");
+
+        int before = facade.getAllMovies().size();
+        MovieDTO movie = new MovieDTO("Maleficent", "2014", "6");
+        facade.addMovie(movie);
+        int after = facade.getAllMovies().size();
+
+        assertTrue(before < after);
+    }
+
+    /**
+     * Test of editMovie method, of class MovieFacade.
+     */
+    @Test
+    public void testEditMovie() throws Exception {
+        System.out.println("editMovie");
+
+        m1.setTitle("Beetlejuice");
+        m1.setYear(1988);
+        m1.setVotes(2);
+
+        MovieDTO movie = new MovieDTO(m1);
+
+        facade.editMovie(movie);
+        movie = facade.getMovie(m1.getId()).get(0);
+
+        assertEquals("Beetlejuice", movie.getTitle());
+        assertEquals(1988, movie.getYear());
+        assertEquals(2, movie.getVotes());
+    }
+
+    /**
+     * Test of deleteMovie method, of class MovieFacade.
+     *
+     * @throws java.lang.Exception
+     */
+    @Test
+    public void testDeleteMovie() throws Exception {
+        System.out.println("deleteMovie");
+
+        int before = facade.getAllMovies().size();
+        facade.deleteMovie(m1.getId());
+        int after = facade.getAllMovies().size();
+
+        assertTrue(before > after);
+
+    }
+
+    /**
+     * Test of addActorToMovie method, of class MovieFacade.
+     */
+    @Test
+    public void testAddActorToMovie() throws Exception {
+        System.out.println("addActorToMovie");
+
+        int before = m2.getActors().size();
+        facade.addActorToMovie(m2.getId(), a1.getId());
+        MovieDTO movie = facade.getMovie(m2.getId()).get(0);
+        int after = movie.getActors().size();
+
+        assertTrue(before < after);
+    }
+
+    /**
+     * Test of removeActorFromMovie method, of class MovieFacade.
+     */
+    @Test
+    public void testRemoveActorFromMovie() throws Exception {
+        System.out.println("removeActorFromMovie");
+
+        int before = m2.getActors().size();
+        facade.removeActorFromMovie(m2.getId(), a2.getId());
+        MovieDTO movie = facade.getMovie(m2.getId()).get(0);
+        int after = movie.getActors().size();
+
+        assertTrue(before > after);
+    }
+
+    /**
+     * Test of addDirectorToMovie method, of class MovieFacade.
+     */
+    @Test
+    public void testAddDirectorToMovie() throws Exception {
+        System.out.println("addDirectorToMovie");
+
+        int before = m2.getDirectors().size();
+        facade.addDirectorToMovie(m2.getId(), d1.getId());
+        MovieDTO movie = facade.getMovie(m2.getId()).get(0);
+        int after = movie.getDirectors().size();
+
+        assertTrue(before < after);
+    }
+
+    /**
+     * Test of removeDirectorFromMovie method, of class MovieFacade.
+     */
+    @Test
+    public void testRemoveDirectorFromMovie() throws Exception {
+        System.out.println("removeDirectorFromMovie");
+
+        int before = m2.getDirectors().size();
+        facade.removeDirectorFromMovie(m2.getId(), d2.getId());
+        MovieDTO movie = facade.getMovie(m2.getId()).get(0);
+        int after = movie.getDirectors().size();
+
+        assertTrue(before > after);
+    }
+
+    /**
+     * Test of addGenreToMovie method, of class MovieFacade.
+     */
+    @Test
+    public void testAddGenreToMovie() throws Exception {
+        System.out.println("addGenreToMovie");
+
+        int before = m2.getGenres().size();
+        facade.addGenreToMovie(m2.getId(), g1.getId());
+        MovieDTO movie = facade.getMovie(m2.getId()).get(0);
+        int after = movie.getGenres().size();
+
+        assertTrue(before < after);
+    }
+
+    /**
+     * Test of removeGenreFromMovie method, of class MovieFacade.
+     */
+    @Test
+    public void testRemoveGenreFromMovie() throws Exception {
+        System.out.println("removeGenreFromMovie");
+
+        int before = m2.getGenres().size();
+        facade.removeGenreFromMovie(m2.getId(), g2.getId());
+        MovieDTO movie = facade.getMovie(m2.getId()).get(0);
+        int after = movie.getGenres().size();
+
+        assertTrue(before > after);
     }
 
 }
