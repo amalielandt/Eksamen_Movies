@@ -16,7 +16,7 @@ public class GenreDTO {
     private long id;
     private String name;
 
-    GenreDTO(Genre genre) {
+    public GenreDTO(Genre genre) {
 
         this.id = genre.getId();
         this.name = genre.getName();

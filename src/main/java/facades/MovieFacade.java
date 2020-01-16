@@ -6,6 +6,7 @@
 package facades;
 
 import DTO.ADDTO;
+import DTO.GenreDTO;
 import DTO.MovieDTO;
 import entities.Actor;
 import entities.Director;
@@ -80,10 +81,10 @@ public class MovieFacade {
 
             throw new WebApplicationException("No movie with the given id was found");
         }
-       
+
         try {
             em.getTransaction().begin();
-            
+
             //Checking if information is not already used
             List<MovieDTO> movies = getAllMovies();
             for (MovieDTO m : movies) {
@@ -124,7 +125,7 @@ public class MovieFacade {
             em.close();
         }
     }
-    
+
     public void addActorToMovie(long movie_id, long actor_id) throws NotFoundException {
         EntityManager em = getEntityManager();
 
@@ -151,8 +152,8 @@ public class MovieFacade {
             em.close();
         }
     }
-    
-    public void removeActorFromMovie(long movie_id, long actor_id ) throws NotFoundException {
+
+    public void removeActorFromMovie(long movie_id, long actor_id) throws NotFoundException {
         EntityManager em = getEntityManager();
         Actor actorToRemove = null;
 
@@ -182,7 +183,7 @@ public class MovieFacade {
             em.close();
         }
     }
-    
+
     public void addDirectorToMovie(long movie_id, long director_id) throws NotFoundException {
         EntityManager em = getEntityManager();
 
@@ -209,8 +210,8 @@ public class MovieFacade {
             em.close();
         }
     }
-    
-    public void removeDirectorFromMovie(long movie_id, long director_id ) throws NotFoundException {
+
+    public void removeDirectorFromMovie(long movie_id, long director_id) throws NotFoundException {
         EntityManager em = getEntityManager();
         Director directorToRemove = null;
 
@@ -225,7 +226,7 @@ public class MovieFacade {
             for (Director d : movie.getDirectors()) {
 
                 if (d.getId() == director_id) {
-                   directorToRemove = d;
+                    directorToRemove = d;
                 }
             }
 
@@ -240,7 +241,7 @@ public class MovieFacade {
             em.close();
         }
     }
-    
+
     public void addGenreToMovie(long movie_id, long genre_id) throws NotFoundException {
         EntityManager em = getEntityManager();
 
@@ -267,8 +268,8 @@ public class MovieFacade {
             em.close();
         }
     }
-    
-    public void removeGenreFromMovie(long movie_id, long genre_id ) throws NotFoundException {
+
+    public void removeGenreFromMovie(long movie_id, long genre_id) throws NotFoundException {
         EntityManager em = getEntityManager();
         Genre genreToRemove = null;
 
@@ -283,7 +284,7 @@ public class MovieFacade {
             for (Genre g : movie.getGenres()) {
 
                 if (g.getId() == genre_id) {
-                   genreToRemove = g;
+                    genreToRemove = g;
                 }
             }
 
@@ -298,7 +299,7 @@ public class MovieFacade {
             em.close();
         }
     }
-    
+
     public List<MovieDTO> getMovie(long id) {
 
         EntityManager em = getEntityManager();
@@ -398,6 +399,51 @@ public class MovieFacade {
             moviesDTO.add(new MovieDTO(movie));
         });
         return moviesDTO;
+    }
+
+    public List<ADDTO> getAllActors() {
+
+        EntityManager em = getEntityManager();
+        List<ADDTO> actorsDTO = new ArrayList();
+
+        TypedQuery<Actor> query = em.createQuery("SELECT a FROM Actor a", Actor.class);
+        List<Actor> actors = query.getResultList();
+
+        actors.forEach((actor) -> {
+            actorsDTO.add(new ADDTO(actor));
+        });
+
+        return actorsDTO;
+    }
+
+    public List<ADDTO> getAllDirectors() {
+
+        EntityManager em = getEntityManager();
+        List<ADDTO> directorsDTO = new ArrayList();
+
+        TypedQuery<Director> query = em.createQuery("SELECT d FROM Director d", Director.class);
+        List<Director> directors = query.getResultList();
+
+        directors.forEach((director) -> {
+            directorsDTO.add(new ADDTO(director));
+        });
+
+        return directorsDTO;
+    }
+
+    public List<GenreDTO> getAllGenres() {
+
+        EntityManager em = getEntityManager();
+        List<GenreDTO> genresDTO = new ArrayList();
+
+        TypedQuery<Genre> query = em.createQuery("SELECT g FROM Genre g", Genre.class);
+        List<Genre> genres = query.getResultList();
+
+        genres.forEach((genre) -> {
+            genresDTO.add(new GenreDTO(genre));
+        });
+
+        return genresDTO;
     }
 
     public void populateDB() {

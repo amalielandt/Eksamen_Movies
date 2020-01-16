@@ -358,99 +358,163 @@ public class MovieResourceTest {
                 .body("status", equalTo("The movie has been deleted"));
 
     }
-//    /**
-//     * Test of addActorToMovie method, of class MovieResource.
-//     */
-//    @Test
-//    public void testAddActorToMovie() {
-//        System.out.println("addActorToMovie");
-//        long movie_id = 0L;
-//        long actor_id = 0L;
-//        MovieResource instance = new MovieResource();
-//        String expResult = "";
-//        String result = instance.addActorToMovie(movie_id, actor_id);
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of removeActorFromMovie method, of class MovieResource.
-//     */
-//    @Test
-//    public void testRemoveActorFromMovie() {
-//        System.out.println("removeActorFromMovie");
-//        long movie_id = 0L;
-//        long actor_id = 0L;
-//        MovieResource instance = new MovieResource();
-//        String expResult = "";
-//        String result = instance.removeActorFromMovie(movie_id, actor_id);
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of addDirectorToMovie method, of class MovieResource.
-//     */
-//    @Test
-//    public void testAddDirectorToMovie() {
-//        System.out.println("addDirectorToMovie");
-//        long movie_id = 0L;
-//        long director_id = 0L;
-//        MovieResource instance = new MovieResource();
-//        String expResult = "";
-//        String result = instance.addDirectorToMovie(movie_id, director_id);
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of removeDirectorFromMovie method, of class MovieResource.
-//     */
-//    @Test
-//    public void testRemoveDirectorFromMovie() {
-//        System.out.println("removeDirectorFromMovie");
-//        long movie_id = 0L;
-//        long director_id = 0L;
-//        MovieResource instance = new MovieResource();
-//        String expResult = "";
-//        String result = instance.removeDirectorFromMovie(movie_id, director_id);
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of addGenreToMovie method, of class MovieResource.
-//     */
-//    @Test
-//    public void testAddGenreToMovie() {
-//        System.out.println("addGenreToMovie");
-//        long movie_id = 0L;
-//        long genre_id = 0L;
-//        MovieResource instance = new MovieResource();
-//        String expResult = "";
-//        String result = instance.addGenreToMovie(movie_id, genre_id);
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
-//
-//    /**
-//     * Test of removeGenreFromMovie method, of class MovieResource.
-//     */
-//    @Test
-//    public void testRemoveGenreFromMovie() {
-//        System.out.println("removeGenreFromMovie");
-//        long movie_id = 0L;
-//        long genre_id = 0L;
-//        MovieResource instance = new MovieResource();
-//        String expResult = "";
-//        String result = instance.removeGenreFromMovie(movie_id, genre_id);
-//        assertEquals(expResult, result);
-//        // TODO review the generated test code and remove the default call to fail.
-//        fail("The test case is a prototype.");
-//    }
+
+    /**
+     * Test of addActorToMovie method, of class MovieResource.
+     */
+    @Test
+    public void testAddActorToMovie() {
+        System.out.println("addActorToMovie");
+        login("admin", "test");
+        given()
+                .contentType("application/json")
+                .accept(ContentType.JSON)
+                .header("x-access-token", securityToken)
+                .when()
+                .put("/movie/actor/" + m2.getId() + "/" + a3.getId()).then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("status", equalTo("The actor has been added"));
+    }
+
+    /**
+     * Test of removeActorFromMovie method, of class MovieResource.
+     */
+    @Test
+    public void testRemoveActorFromMovie() {
+        System.out.println("removeActorFromMovie");
+        
+        login("admin", "test");
+        given()
+                .contentType("application/json")
+                .accept(ContentType.JSON)
+                .header("x-access-token", securityToken)
+                .when()
+                .delete("/movie/actor/" + m2.getId() + "/" + a2.getId()).then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("status", equalTo("The actor has been removed"));
+    }
+
+    /**
+     * Test of addDirectorToMovie method, of class MovieResource.
+     */
+    @Test
+    public void testAddDirectorToMovie() {
+        System.out.println("addDirectorToMovie");
+
+        login("admin", "test");
+        given()
+                .contentType("application/json")
+                .accept(ContentType.JSON)
+                .header("x-access-token", securityToken)
+                .when()
+                .put("/movie/director/" + m2.getId() + "/" + d3.getId()).then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("status", equalTo("The director has been added"));
+
+    }
+
+    /**
+     * Test of removeDirectorFromMovie method, of class MovieResource.
+     */
+    @Test
+    public void testRemoveDirectorFromMovie() {
+        System.out.println("removeDirectorFromMovie");
+        
+        login("admin", "test");
+        given()
+                .contentType("application/json")
+                .accept(ContentType.JSON)
+                .header("x-access-token", securityToken)
+                .when()
+                .delete("/movie/director/" + m2.getId() + "/" + d2.getId()).then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("status", equalTo("The director has been removed"));
+    }
+
+    /**
+     * Test of addGenreToMovie method, of class MovieResource.
+     */
+    @Test
+    public void testAddGenreToMovie() {
+        System.out.println("addGenreToMovie");
+
+        login("admin", "test");
+        given()
+                .contentType("application/json")
+                .accept(ContentType.JSON)
+                .header("x-access-token", securityToken)
+                .when()
+                .put("/movie/genre/" + m2.getId() + "/" + g1.getId()).then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("status", equalTo("The genre has been added"));
+
+    }
+
+    /**
+     * Test of removeGenreFromMovie method, of class MovieResource.
+     */
+    @Test
+    public void testRemoveGenreFromMovie() {
+        System.out.println("removeGenreFromMovie");
+        
+        login("admin", "test");
+        given()
+                .contentType("application/json")
+                .accept(ContentType.JSON)
+                .header("x-access-token", securityToken)
+                .when()
+                .delete("/movie/genre/" + m2.getId() + "/" + g2.getId()).then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("status", equalTo("The genre has been removed"));
+    }
+    
+    /**
+     * Test of getAllActors method, of class MovieResource.
+     */
+    @Test
+    public void testGetAllActors() {
+        System.out.println("getAllActors");
+
+        given().contentType("application/json")
+                .get("/movie/actor/all").then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("name", hasItems(a1.getName(), a2.getName(), a3.getName()),
+                        "about", hasItems(a1.getAbout(), a2.getAbout(), a3.getAbout()));
+    }
+
+    /**
+     * Test of getAllDirectors method, of class MovieResource.
+     */
+    @Test
+    public void testGetAllDirectors() {
+        System.out.println("getAllDirectors");
+
+        given().contentType("application/json")
+                .get("/movie/director/all").then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("name", hasItems(d1.getName(), d2.getName(), d3.getName()),
+                        "about", hasItems(d1.getAbout(), d2.getAbout(), d3.getAbout()));
+    }
+
+    /**
+     * Test of getAllGenres method, of class MovieResource.
+     */
+    @Test
+    public void testGetAllGenres() {
+        System.out.println("getAllGenres");
+
+        given().contentType("application/json")
+                .get("/movie/genre/all").then()
+                .assertThat()
+                .statusCode(HttpStatus.OK_200.getStatusCode())
+                .body("name", hasItems(g1.getName(), g2.getName(), g3.getName()));
+    }
 }

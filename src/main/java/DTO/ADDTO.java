@@ -18,15 +18,13 @@ public class ADDTO {
     private String name;
     private String about;
 
-    ADDTO(Actor actor) {
-
+    public ADDTO(Actor actor) {
         this.id = actor.getId();
         this.name = actor.getName();
         this.about = actor.getAbout();
     }
-    
-    ADDTO(Director director) {
 
+    public ADDTO(Director director) {
         this.id = director.getId();
         this.name = director.getName();
         this.about = director.getAbout();

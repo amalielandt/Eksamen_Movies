@@ -5,6 +5,8 @@
  */
 package rest;
 
+import DTO.ADDTO;
+import DTO.GenreDTO;
 import DTO.MovieDTO;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -323,6 +325,30 @@ public class MovieResource {
     public List<MovieDTO> getMoviesByGenre(@PathParam("genre") String genre) {
 
         return facade.getPersonsByGenre(genre);
+    }
+    
+    @GET
+    @Path("actor/all")
+    @Produces({MediaType.APPLICATION_JSON})
+    public List<ADDTO> getAllActors() {
+
+        return facade.getAllActors();
+    }
+    
+    @GET
+    @Path("director/all")
+    @Produces({MediaType.APPLICATION_JSON})
+    public List<ADDTO> getAllDirectors() {
+
+        return facade.getAllDirectors();
+    }
+    
+    @GET
+    @Path("genre/all")
+    @Produces({MediaType.APPLICATION_JSON})
+    public List<GenreDTO> getAllGenres() {
+
+        return facade.getAllGenres();
     }
 
 }
