@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/amalielandt/CA3.svg?branch=master)](https://travis-ci.org/amalielandt/CA3)
+[![Build Status](https://travis-ci.org/amalielandt/Eksamen_Movies.svg?branch=master)](https://travis-ci.org/amalielandt/Eksamen_Movies)
 
 # How to use the startcode
 
