@@ -56,7 +56,7 @@ public class MovieFacade {
             List<MovieDTO> movies = getAllMovies();
             for (MovieDTO m : movies) {
 
-                if (movie.getTitle().toLowerCase().equals(m.getTitle().toLowerCase()) && movie.getId() != m.getId()) {
+                if (movie.getTitle().toLowerCase().equals(m.getTitle().toLowerCase())) {
                     throw new NotFoundException("The movie title is already in the system");
                 }
             }
