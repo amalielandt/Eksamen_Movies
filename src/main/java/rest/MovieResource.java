@@ -47,6 +47,7 @@ public class MovieResource {
     private UriInfo context;
 
     @GET
+    @Path("/populate")
     @Produces({MediaType.APPLICATION_JSON})
     public String populateDB() {
 

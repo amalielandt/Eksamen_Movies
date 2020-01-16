@@ -453,35 +453,93 @@ public class MovieFacade {
         Actor a2 = new Actor("Leonardo DiCaprio", "Leonardo Wilhelm DiCaprio (born November 11, 1974) is an American actor, producer, and environmentalist.");
         Actor a3 = new Actor("Will Smith", "Willard Carroll Smith Jr. (born September 25, 1968) is an American actor and rapper. In April 2007, Newsweek called him \"the most powerful actor in Hollywood\".");
         Actor a4 = new Actor("Margot Robbie", "Margot Elise Robbie (born 2 July 1990) is an Australian actress and film producer. She has received nominations for two Academy Awards and five BAFTA Awards.");
+        Actor a5 = new Actor("Angelina Jolie", "Angelina Jolie (formerly Jolie Pitt, born June 4, 1975) is an American actress, filmmaker, and humanitarian.");
 
         Director d1 = new Director("Steven Spielberg", "Steven Allan Spielberg (born December 18, 1946) is an American filmmaker. He is considered one of the founding pioneers of the New Hollywood era and one of the most popular directors and producers in film history.");
         Director d2 = new Director("Quentin Tarantino", "Quentin Jerome Tarantino (born March 27, 1963) is an American filmmaker, actor, film programmer, and cinema owner. His films are characterized by nonlinear storylines, satirical subject matter, aestheticization of violence.");
         Director d3 = new Director("Tim Burton", "Timothy Walter Burton (born August 25, 1958) is an American director, producer, artist, writer, and animator. He is known for his dark, gothic, and eccentric horror and fantasy films such as Beetlejuice (1988) and Edward Scissorhands (1990).");
+        Director d4 = new Director("Christopher Nolan", "Christopher Edward Nolan, born 30 July 1970) is a British-American filmmaker, who is known for making personal, distinctive films within the Hollywood mainstream.");
+        Director d5 = new Director("Gore Verbinski", "Gore Verbinski is an american filmdirector, screenwriter, producer and musician");
 
         Genre g1 = new Genre("Comedy");
         Genre g2 = new Genre("Drama");
         Genre g3 = new Genre("Thriller");
+        Genre g4 = new Genre("Action");
+        Genre g5 = new Genre("Fantacy");
+        Genre g6 = new Genre("Family");
+        Genre g7 = new Genre("Adventure");
 
         Movie m1 = new Movie("Edward Scissorhands", 1990, 4);
         Movie m2 = new Movie("Once Upon a Time in Hollywood", 2019, 3);
         Movie m3 = new Movie("Men in Black", 1997, 5);
+        Movie m4 = new Movie("Maleficent", 2014, 10);
+        Movie m5 = new Movie("Pirates of the Caribbean", 2003, 10);
+        Movie m6 = new Movie("Beetlejuice", 1988, 5);
+        Movie m7 = new Movie("Aladdin", 2019, 15);
+        Movie m8 = new Movie("Inception", 2010, 7);
 
         m1.addActor(a1);
         m1.addDirector(d3);
         m1.addDirector(d1);
         m1.addGenre(g1);
         m1.addGenre(g2);
+        m1.addGenre(g7);
 
         m2.addActor(a2);
         m2.addActor(a4);
         m2.addDirector(d2);
         m2.addGenre(g2);
         m2.addGenre(g3);
+        m2.addGenre(g6);
 
         m3.addActor(a3);
+        m3.addActor(a5);
         m3.addDirector(d1);
+        m3.addDirector(d5);
         m3.addGenre(g1);
         m3.addGenre(g2);
+        m3.addGenre(g5);
+        m3.addGenre(g7);
+
+        m4.addActor(a5);
+        m4.addActor(a1);
+        m4.addDirector(d5);
+        m4.addDirector(d1);
+        m4.addGenre(g7);
+        m4.addGenre(g5);
+        m4.addGenre(g4);
+
+        m5.addActor(a1);
+        m5.addActor(a2);
+        m5.addDirector(d5);
+        m5.addGenre(g2);
+        m5.addGenre(g4);
+        m5.addGenre(g5);
+
+        m6.addActor(a4);
+        m6.addActor(a2);
+        m6.addDirector(d2);
+        m6.addDirector(d4);
+        m6.addGenre(g6);
+        m6.addGenre(g5);
+        m6.addGenre(g1);
+
+        m7.addActor(a3);
+        m7.addActor(a4);
+        m7.addDirector(d3);
+        m7.addDirector(d2);
+        m7.addGenre(g7);
+        m7.addGenre(g6);
+        m7.addGenre(g5);
+
+        m8.addActor(a1);
+        m8.addActor(a2);
+        m8.addActor(a4);
+        m8.addDirector(d4);
+        m8.addDirector(d1);
+        m8.addGenre(g7);
+        m8.addGenre(g1);
+        m8.addGenre(g3);
 
         try {
             em.getTransaction().begin();
@@ -493,6 +551,11 @@ public class MovieFacade {
             em.persist(m1);
             em.persist(m2);
             em.persist(m3);
+            em.persist(m4);
+            em.persist(m5);
+            em.persist(m6);
+            em.persist(m7);
+            em.persist(m8);
 
             em.getTransaction().commit();
 
