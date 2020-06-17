@@ -232,7 +232,7 @@ public class LoginEndpointTest {
     public void testCreateUser() {
 
         String payload = "{\"username\": \"test\","
-                + "\"password\": \"1234\"}";
+                + "\"password\": \"1234abcD\"}";
 
         given()
                 .contentType("application/json")

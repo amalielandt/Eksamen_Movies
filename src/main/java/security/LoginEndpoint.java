@@ -24,6 +24,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import errorhandling.AuthenticationException;
 import errorhandling.GenericExceptionMapper;
+import java.text.ParseException;
 import javax.persistence.EntityManagerFactory;
 import utils.EMF_Creator;
 
@@ -37,7 +38,7 @@ public class LoginEndpoint {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public Response login(String jsonString) throws AuthenticationException {
+    public Response login(String jsonString) throws AuthenticationException, ParseException {
         JsonObject json = new JsonParser().parse(jsonString).getAsJsonObject();
         String username = json.get("username").getAsString();
         String password = json.get("password").getAsString();

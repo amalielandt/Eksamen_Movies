@@ -117,7 +117,7 @@ public class UserFacadeTest {
         System.out.println("createUser");
         
         String username = "test";
-        String password = "1234";
+        String password = "1234abcD";
      
         facade.createUser(username, password);
         User result = facade.getVeryfiedUser(username, password);
